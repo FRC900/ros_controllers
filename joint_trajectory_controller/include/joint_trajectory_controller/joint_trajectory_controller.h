@@ -80,9 +80,11 @@
 #include <talon_controllers/talon_controller_interface.h>
 #include <talon_controllers/talonfxpro_controller_interface.h>
 #include <ctre_interfaces/talon_state_interface.h>
+#include <type_traits>
 
 namespace joint_trajectory_controller
 {
+
 
 /**
  * \brief Controller for executing joint-space trajectories on a group of joints.
@@ -180,14 +182,26 @@ protected:
   typedef realtime_tools::RealtimeBox<TrajectoryPtr> TrajectoryBox;
   typedef typename Segment::Scalar Scalar;
 
-  typedef HardwareInterfaceAdapter<HardwareInterface, typename Segment::State> HwIfaceAdapter;
+  using HwAdapterType = typename std::conditional_t<std::is_same_v<HardwareInterface, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface>, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface, HardwareInterface>;
+
+  typedef HardwareInterfaceAdapter<HwAdapterType, typename Segment::State> HwIfaceAdapter;
   
-  typedef typename std::conditional_t<std::is_same_v<HardwareInterface, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface>, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface, typename HardwareInterface::ResourceHandleType> JointHandle;
-  
+  //typedef typename std::conditional_t<std::is_same_v<HardwareInterface, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface>, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface, typename HardwareInterface::ResourceHandleType> JointHandle;
+      // Helper metafunction to check if a type has ResourceHandleType
+    // Define JointHandle type alias based on HardwareInterface
+    // Define JointHandle type alias based on HardwareInterface
+    //using JointHandle = typename std::conditional_t<std::is_same_v<HardwareInterface, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface>, typename talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface, typename HardwareInterface::ResourceHandleType>;
+
+    // Define a trait to get the appropriate ResourceHandleType
+
+    // Define JointHandle using conditional type selection
+    using JointHandle = typename std::conditional_t<
+        std::is_same_v<HardwareInterface, hardware_interface::talonfxpro::TalonFXProCommandInterface>,
+        talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface,
+        typename HardwareInterface::ResourceHandleType>;
 
   bool                      verbose_;            ///< Hard coded verbose flag to help in debugging
   std::string               name_;               ///< Controller name.
-  //std::vector<talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface>  joints_;             ///< Handles to controlled joints.
   typename std::vector<JointHandle> joints_;
   std::vector<bool>         angle_wraparound_;   ///< Whether controlled joints wrap around or not.
   std::vector<std::string>  joint_names_;        ///< Controlled joint names.

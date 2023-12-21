@@ -61,6 +61,7 @@ template <class HardwareInterface, class State>
 class HardwareInterfaceAdapter
 {
 public:
+
   bool init(std::vector<typename HardwareInterface::ResourceHandleType>& /*joint_handles*/, ros::NodeHandle& /*controller_nh*/)
   {
     return false;
@@ -224,6 +225,7 @@ private:
   std::vector<double> velocity_ff_;
 
   std::vector<hardware_interface::JointHandle>* joint_handles_ptr_;
+  // use is_same to check if the template type is the same as the type in the angle brackets
 };
 
 /**
@@ -366,7 +368,7 @@ private:
 
 // talonfxpro adapter
 template <class State>
-class HardwareInterfaceAdapter<talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface, State>
+class HardwareInterfaceAdapter<hardware_interface::talonfxpro::TalonFXProCommandInterface, State>
 {
 public:
   HardwareInterfaceAdapter() : joint_handles_ptr_(nullptr) {}

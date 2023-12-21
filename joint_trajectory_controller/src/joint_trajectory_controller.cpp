@@ -45,7 +45,7 @@ namespace talon_position_controllers
    * commands to a \b position interface.
    */
   typedef joint_trajectory_controller::JointTrajectoryController<trajectory_interface::QuinticSplineSegment<double>,
-                                                                 talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface>
+                                                                 hardware_interface::talonfxpro::TalonFXProCommandInterface>
           JointTrajectoryController;
 
 }

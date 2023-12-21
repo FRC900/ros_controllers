@@ -252,7 +252,12 @@ bool JointTrajectoryController<SegmentImpl, HardwareInterface>::init(HardwareInt
   assert(n_joints == urdf_joints.size());
 
   // Initialize members
-  joints_.resize(n_joints);
+  //joints_.resize(n_joints);
+  // use emplace_back instead of resize
+  for (unsigned int i = 0; i < n_joints; ++i)
+  {
+    joints_.emplace_back();
+  }
   angle_wraparound_.resize(n_joints);
   for (unsigned int i = 0; i < n_joints; ++i)
   {
@@ -262,7 +267,7 @@ bool JointTrajectoryController<SegmentImpl, HardwareInterface>::init(HardwareInt
       if constexpr(std::is_same<HardwareInterface, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface>::value)
       {
         // trying to use first declaration of initWithNode
-        joints_[i] = hw->initWithNode(hw, nullptr, controller_nh);
+        joints_[i].initWithNode(hw, nullptr, controller_nh);
       }
       if constexpr(std::is_same<HardwareInterface, hardware_interface::PositionJointInterface>::value)
       {
