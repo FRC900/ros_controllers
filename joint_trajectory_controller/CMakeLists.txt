@@ -15,8 +15,6 @@ find_package(catkin
     roscpp
     trajectory_msgs
     urdf
-    ctre_interfaces
-    talon_controllers
 )
 
 find_package(Boost REQUIRED)

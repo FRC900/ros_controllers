@@ -257,26 +257,11 @@ bool JointTrajectoryController<SegmentImpl, HardwareInterface>::init(HardwareInt
   for (unsigned int i = 0; i < n_joints; ++i)
   {
     // Joint handle
-    try {
-      // check type at compile time and use initWithNode if its a talonfxpro controller
-      if constexpr(std::is_same<HardwareInterface, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface>::value)
-      {
-        // trying to use first declaration of initWithNode
-        joints_[i] = hw->initWithNode(hw, nullptr, controller_nh);
-      }
-      if constexpr(std::is_same<HardwareInterface, hardware_interface::PositionJointInterface>::value)
-      {
-        joints_[i] = hw->getHandle(joint_names_[i]);
-      }
-
-    
-    }
-    // print out the error
-    catch (const std::exception &exc) 
+    try {joints_[i] = hw->getHandle(joint_names_[i]);}
+    catch (...)
     {
-      //print out the error
       ROS_ERROR_STREAM_NAMED(name_, "Could not find joint '" << joint_names_[i] << "' in '" <<
-                                    this->getHardwareInterfaceType() << "'. The error was: " << exc.what());
+                                    this->getHardwareInterfaceType() << "'.");
       return false;
     }
 
