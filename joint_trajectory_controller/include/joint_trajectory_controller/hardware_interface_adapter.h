@@ -375,6 +375,8 @@ public:
 
   bool init(std::vector<talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface>& joint_handles, ros::NodeHandle& /*controller_nh*/)
   {
+    ROS_ERROR_STREAM("RIGHT HERE MFER.");
+
     // Store pointer to joint handles
     joint_handles_ptr_ = &joint_handles;
 

@@ -132,6 +132,7 @@ template <class SegmentImpl, class HardwareInterface>
 inline void JointTrajectoryController<SegmentImpl, HardwareInterface>::
 starting(const ros::Time& time)
 {
+  ROS_ERROR_STREAM("starting==============");
   // Update time data
   TimeData time_data;
   time_data.time   = time;
@@ -188,7 +189,7 @@ preemptActiveGoal()
 template <class SegmentImpl, class HardwareInterface>
 JointTrajectoryController<SegmentImpl, HardwareInterface>::
 JointTrajectoryController()
-  : verbose_(false) // Set to true during debugging
+  : verbose_(false) // Set to true during INFOging
 {
   // The verbose parameter is for advanced use as it breaks real-time safety
   // by enabling ROS logging services
@@ -197,7 +198,7 @@ JointTrajectoryController()
     ROS_WARN_STREAM(
         "The joint_trajectory_controller verbose flag is enabled. "
         << "This flag breaks real-time safety and should only be "
-        << "used for debugging");
+        << "used for INFOging");
   }
 }
 
@@ -206,6 +207,7 @@ bool JointTrajectoryController<SegmentImpl, HardwareInterface>::init(HardwareInt
                                                                      ros::NodeHandle&   root_nh,
                                                                      ros::NodeHandle&   controller_nh)
 {
+  ROS_ERROR_STREAM("init==============");
   using namespace internal;
 
   // Cache controller node handle
@@ -217,25 +219,25 @@ bool JointTrajectoryController<SegmentImpl, HardwareInterface>::init(HardwareInt
   // State publish rate
   double state_publish_rate = 50.0;
   controller_nh_.getParam("state_publish_rate", state_publish_rate);
-  ROS_DEBUG_STREAM_NAMED(name_, "Controller state will be published at " << state_publish_rate << "Hz.");
+  ROS_INFO_STREAM_NAMED(name_, "Controller state will be published at " << state_publish_rate << "Hz.");
   state_publisher_period_ = ros::Duration(1.0 / state_publish_rate);
 
   // Action status checking update rate
   double action_monitor_rate = 20.0;
   controller_nh_.getParam("action_monitor_rate", action_monitor_rate);
   action_monitor_period_ = ros::Duration(1.0 / action_monitor_rate);
-  ROS_DEBUG_STREAM_NAMED(name_, "Action status changes will be monitored at " << action_monitor_rate << "Hz.");
+  ROS_INFO_STREAM_NAMED(name_, "Action status changes will be monitored at " << action_monitor_rate << "Hz.");
 
   // Stop trajectory duration
   stop_trajectory_duration_ = 0.0;
   controller_nh_.getParam("stop_trajectory_duration", stop_trajectory_duration_);
-  ROS_DEBUG_STREAM_NAMED(name_, "Stop trajectory has a duration of " << stop_trajectory_duration_ << "s.");
+  ROS_INFO_STREAM_NAMED(name_, "Stop trajectory has a duration of " << stop_trajectory_duration_ << "s.");
 
   // Checking if partial trajectories are allowed
   controller_nh_.param<bool>("allow_partial_joints_goal", allow_partial_joints_goal_, false);
   if (allow_partial_joints_goal_)
   {
-    ROS_DEBUG_NAMED(name_, "Goals with partial set of joints are allowed");
+    ROS_INFO_NAMED(name_, "Goals with partial set of joints are allowed");
   }
 
   // List of controlled joints
@@ -263,11 +265,20 @@ bool JointTrajectoryController<SegmentImpl, HardwareInterface>::init(HardwareInt
   {
     // Joint handle
     try {
+      ROS_ERROR_STREAM("In the loop ===aWDAWD " << i);
       // check type at compile time and use initWithNode if its a talonfxpro controller
-      if constexpr(std::is_same<HardwareInterface, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface>::value)
+      // ooooh I got gotten here, should be
+      if constexpr(std::is_same_v<HardwareInterface, hardware_interface::talonfxpro::TalonFXProCommandInterface>)
       {
         // trying to use first declaration of initWithNode
-        joints_[i].initWithNode(hw, nullptr, controller_nh);
+        /*
+        bool TalonControllerInterface::initWithNode(hardware_interface::TalonCommandInterface *tci,
+                                            hardware_interface::TalonStateInterface *tsi,
+                                            ros::NodeHandle &controller_nh,
+                                            const std::string &talon_name)
+    */
+        ROS_ERROR_STREAM("trying to use first declaration of initWithNode for joint " << joint_names_[i]);
+        joints_[i].initWithNode(hw, nullptr, controller_nh, joint_names_[i]);
       }
       if constexpr(std::is_same<HardwareInterface, hardware_interface::PositionJointInterface>::value)
       {
@@ -289,12 +300,12 @@ bool JointTrajectoryController<SegmentImpl, HardwareInterface>::init(HardwareInt
     angle_wraparound_[i] = urdf_joints[i]->type == urdf::Joint::CONTINUOUS;
     const std::string not_if = angle_wraparound_[i] ? "" : "non-";
 
-    ROS_DEBUG_STREAM_NAMED(name_, "Found " << not_if << "continuous joint '" << joint_names_[i] << "' in '" <<
+    ROS_INFO_STREAM_NAMED(name_, "Found " << not_if << "continuous joint '" << joint_names_[i] << "' in '" <<
                                   this->getHardwareInterfaceType() << "'.");
   }
 
   assert(joints_.size() == angle_wraparound_.size());
-  ROS_DEBUG_STREAM_NAMED(name_, "Initialized controller '" << name_ << "' with:" <<
+  ROS_INFO_STREAM_NAMED(name_, "Initialized controller '" << name_ << "' with:" <<
                          "\n- Number of joints: " << getNumberOfJoints() <<
                          "\n- Hardware interface type: '" << this->getHardwareInterfaceType() << "'" <<
                          "\n- Trajectory segment type: '" << hardware_interface::internal::demangledTypeName<SegmentImpl>() << "'");
@@ -366,6 +377,7 @@ template <class SegmentImpl, class HardwareInterface>
 void JointTrajectoryController<SegmentImpl, HardwareInterface>::
 update(const ros::Time& time, const ros::Duration& period)
 {
+  //ROS_ERROR_STREAM("update==============");
   // Get currently followed trajectory
   TrajectoryPtr curr_traj_ptr;
   curr_trajectory_box_.get(curr_traj_ptr);
@@ -436,7 +448,7 @@ update(const ros::Time& time, const ros::Duration& period)
       else if (segment_it == --curr_traj[i].end())
       {
         if (verbose_)
-          ROS_DEBUG_STREAM_THROTTLE_NAMED(1,name_,"Finished executing last segment, checking goal tolerances");
+          ROS_INFO_STREAM_THROTTLE_NAMED(1,name_,"Finished executing last segment, checking goal tolerances");
 
         // Controller uptime
         const ros::Time uptime = time_data_.readFromRT()->uptime;
@@ -535,7 +547,7 @@ updateTrajectoryCommand(const JointTrajectoryConstPtr& msg, RealtimeGoalHandlePt
   if (msg->points.empty())
   {
     setHoldPosition(time_data->uptime, gh);
-    ROS_DEBUG_NAMED(name_, "Empty trajectory command, stopping.");
+    ROS_INFO_NAMED(name_, "Empty trajectory command, stopping.");
     return true;
   }
 
@@ -586,7 +598,7 @@ template <class SegmentImpl, class HardwareInterface>
 void JointTrajectoryController<SegmentImpl, HardwareInterface>::
 goalCB(GoalHandle gh)
 {
-  ROS_DEBUG_STREAM_NAMED(name_,"Received new action goal");
+  ROS_INFO_STREAM_NAMED(name_,"Received new action goal");
 
   // Precondition: Running controller
   if (!this->isRunning())
@@ -672,7 +684,7 @@ cancelCB(GoalHandle gh)
 
     // Enter hold current position mode
     setHoldPosition(uptime);
-    ROS_DEBUG_NAMED(name_, "Canceling active action goal because cancel callback recieved from actionlib.");
+    ROS_INFO_NAMED(name_, "Canceling active action goal because cancel callback recieved from actionlib.");
 
     // Mark the current goal as canceled
     current_active_goal->gh_.setCanceled();
