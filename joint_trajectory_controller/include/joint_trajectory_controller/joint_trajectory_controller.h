@@ -182,22 +182,22 @@ protected:
   typedef realtime_tools::RealtimeBox<TrajectoryPtr> TrajectoryBox;
   typedef typename Segment::Scalar Scalar;
 
-  using HwAdapterType = typename std::conditional_t<std::is_same_v<HardwareInterface, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface>, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface, HardwareInterface>;
+  using HwAdapterType = typename std::conditional_t<std::is_same_v<HardwareInterface, talonfxpro_controllers::TalonFXProMotionMagicVoltageControllerInterface>, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface, HardwareInterface>;
 
   typedef HardwareInterfaceAdapter<HwAdapterType, typename Segment::State> HwIfaceAdapter;
   
-  //typedef typename std::conditional_t<std::is_same_v<HardwareInterface, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface>, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface, typename HardwareInterface::ResourceHandleType> JointHandle;
+  //typedef typename std::conditional_t<std::is_same_v<HardwareInterface, talonfxpro_controllers::TalonFXProMotionMagicVoltageControllerInterface>, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface, typename HardwareInterface::ResourceHandleType> JointHandle;
       // Helper metafunction to check if a type has ResourceHandleType
     // Define JointHandle type alias based on HardwareInterface
     // Define JointHandle type alias based on HardwareInterface
-    //using JointHandle = typename std::conditional_t<std::is_same_v<HardwareInterface, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface>, typename talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface, typename HardwareInterface::ResourceHandleType>;
+    //using JointHandle = typename std::conditional_t<std::is_same_v<HardwareInterface, talonfxpro_controllers::TalonFXProMotionMagicVoltageControllerInterface>, typename talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface, typename HardwareInterface::ResourceHandleType>;
 
     // Define a trait to get the appropriate ResourceHandleType
 
     // Define JointHandle using conditional type selection
     using JointHandle = typename std::conditional_t<
         std::is_same_v<HardwareInterface, hardware_interface::talonfxpro::TalonFXProCommandInterface>,
-        talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface,
+        talonfxpro_controllers::TalonFXProMotionMagicVoltageControllerInterface,
         typename HardwareInterface::ResourceHandleType>;
 
   bool                      verbose_;            ///< Hard coded verbose flag to help in debugging

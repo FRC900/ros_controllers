@@ -373,7 +373,7 @@ class HardwareInterfaceAdapter<hardware_interface::talonfxpro::TalonFXProCommand
 public:
   HardwareInterfaceAdapter() : joint_handles_ptr_(nullptr) {}
 
-  bool init(std::vector<talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface>& joint_handles, ros::NodeHandle& /*controller_nh*/)
+  bool init(std::vector<talonfxpro_controllers::TalonFXProMotionMagicVoltageControllerInterface>& joint_handles, ros::NodeHandle& /*controller_nh*/)
   {
     ROS_ERROR_STREAM("RIGHT HERE MFER.");
 
@@ -396,11 +396,12 @@ public:
     for (unsigned int i = 0; i < n_joints; ++i)
     {
       (*joint_handles_ptr_)[i].setControlPosition(desired_state.position[i]);
-      (*joint_handles_ptr_)[i].setControlVelocity(desired_state.velocity[i]);
-      (*joint_handles_ptr_)[i].setControlAcceleration(desired_state.acceleration[i]);
+      // could set, but in motion magic mode, velocity and acceleration are ignored and cause warnings
+      //(*joint_handles_ptr_)[i].setControlVelocity(desired_state.velocity[i]);
+      //(*joint_handles_ptr_)[i].setControlAcceleration(desired_state.acceleration[i]);
     }
   }
 
 private:
-  std::vector<talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface>* joint_handles_ptr_;
+  std::vector<talonfxpro_controllers::TalonFXProMotionMagicVoltageControllerInterface>* joint_handles_ptr_;
 };
