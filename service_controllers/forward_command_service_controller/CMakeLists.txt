@@ -6,8 +6,19 @@ find_package(catkin REQUIRED COMPONENTS
   controller_interface
   hardware_interface
   realtime_tools
+  message_generation
   roscpp
   std_msgs
+)
+
+# Add services and generate them
+add_service_files(
+  FILES
+  Command.srv
+  )
+
+generate_messages(
+  DEPENDENCIES std_msgs
 )
 
 # Declare catkin package
