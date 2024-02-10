@@ -42,7 +42,7 @@
 #include <controller_interface/controller.h>
 #include <std_msgs/Float64.h>
 #include <realtime_tools/realtime_buffer.h>
-#include <forward_command_service_controller/CommandRequest.h>
+#include <forward_command_service_controller/Command.h>
 
 
 namespace forward_command_service_controller
@@ -81,7 +81,7 @@ public:
       return false;
     }
     joint_ = hw->getHandle(joint_name);
-    server_command = n.advertiseService("command", &ForwardCommandServiceController::commandCB);
+    server_command_ = n.advertiseService("command", &ForwardCommandServiceController::commandCB, this);
     return true;
   }
 
@@ -93,8 +93,8 @@ public:
 
 private:
   ros::ServiceServer server_command_;
-  bool commandCB(const forward_command_service_controller::CommandRequest& msg) {
-    command_buffer_.writeFromNonRT(msg->data);
+  bool commandCB(forward_command_service_controller::Command::Request& msg, forward_command_service_controller::Command::Response& nothing) {
+    command_buffer_.writeFromNonRT(msg.data);
     return true;
   }
 };
