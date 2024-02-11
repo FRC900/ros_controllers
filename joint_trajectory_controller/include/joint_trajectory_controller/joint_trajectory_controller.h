@@ -192,7 +192,7 @@ protected:
 
   bool                      verbose_;            ///< Hard coded verbose flag to help in debugging
   std::string               name_;               ///< Controller name.
-  std::vector<JointHandle>  joints_;
+  std::vector<JointHandle>  joints_;             ///< Handles to controlled joints.
   std::vector<bool>         angle_wraparound_;   ///< Whether controlled joints wrap around or not.
   std::vector<std::string>  joint_names_;        ///< Controlled joint names.
   SegmentTolerances<Scalar> default_tolerances_; ///< Default trajectory segment tolerances.
