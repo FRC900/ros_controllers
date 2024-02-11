@@ -52,7 +52,7 @@ private:
 
   using JointHandle = typename std::conditional_t<
       std::is_same_v<HardwareInterface, hardware_interface::talonfxpro::TalonFXProCommandInterface>,
-      talonfxpro_controllers::TalonFXProMotionMagicVoltageControllerInterface,
+      talonfxpro_controllers::TalonFXProPositionVoltageControllerInterface,
       typename HardwareInterface::ResourceHandleType>;
 
 public:

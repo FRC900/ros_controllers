@@ -46,7 +46,6 @@
 // probably more includes than needed but shouldn't miss anything with this
 #include <talon_controllers/talon_controller_interface.h>
 #include <talon_controllers/talonfxpro_controller_interface.h>
-#include <ctre_interfaces/talon_state_interface.h>
 
 /**
  * \brief Helper class to simplify integrating the JointTrajectoryController with different hardware interfaces.
@@ -372,7 +371,7 @@ class HardwareInterfaceAdapter<hardware_interface::talonfxpro::TalonFXProCommand
 public:
   HardwareInterfaceAdapter() : joint_handles_ptr_(nullptr) {}
 
-  bool init(std::vector<talonfxpro_controllers::TalonFXProMotionMagicVoltageControllerInterface>& joint_handles, ros::NodeHandle& /*controller_nh*/)
+  bool init(std::vector<talonfxpro_controllers::TalonFXProPositionVoltageControllerInterface>& joint_handles, ros::NodeHandle& /*controller_nh*/)
   {
     // Store pointer to joint handles
     joint_handles_ptr_ = &joint_handles;
@@ -393,12 +392,11 @@ public:
     for (unsigned int i = 0; i < n_joints; ++i)
     {
       (*joint_handles_ptr_)[i].setControlPosition(desired_state.position[i]);
-      // could set, but in motion magic mode, velocity and acceleration are ignored and cause warnings
-      //(*joint_handles_ptr_)[i].setControlVelocity(desired_state.velocity[i]);
+      (*joint_handles_ptr_)[i].setControlVelocity(desired_state.velocity[i]);
       //(*joint_handles_ptr_)[i].setControlAcceleration(desired_state.acceleration[i]);
     }
   }
 
 private:
-  std::vector<talonfxpro_controllers::TalonFXProMotionMagicVoltageControllerInterface>* joint_handles_ptr_;
+  std::vector<talonfxpro_controllers::TalonFXProPositionVoltageControllerInterface>* joint_handles_ptr_;
 };

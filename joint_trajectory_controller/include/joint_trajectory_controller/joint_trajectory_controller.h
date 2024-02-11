@@ -180,24 +180,16 @@ protected:
   typedef std::shared_ptr<TrajectoryPerJoint> TrajectoryPerJointPtr;
   typedef realtime_tools::RealtimeBox<TrajectoryPtr> TrajectoryBox;
   typedef typename Segment::Scalar Scalar;
-
-  using HwAdapterType = typename std::conditional_t<std::is_same_v<HardwareInterface, talonfxpro_controllers::TalonFXProMotionMagicVoltageControllerInterface>, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface, HardwareInterface>;
-
-  typedef HardwareInterfaceAdapter<HwAdapterType, typename Segment::State> HwIfaceAdapter;
+  typedef HardwareInterfaceAdapter<HardwareInterface, typename Segment::State> HwIfaceAdapter;
   
-  //typedef typename std::conditional_t<std::is_same_v<HardwareInterface, talonfxpro_controllers::TalonFXProMotionMagicVoltageControllerInterface>, talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface, typename HardwareInterface::ResourceHandleType> JointHandle;
-      // Helper metafunction to check if a type has ResourceHandleType
-    // Define JointHandle type alias based on HardwareInterface
-    // Define JointHandle type alias based on HardwareInterface
-    //using JointHandle = typename std::conditional_t<std::is_same_v<HardwareInterface, talonfxpro_controllers::TalonFXProMotionMagicVoltageControllerInterface>, typename talonfxpro_controllers::TalonFXProPositionTorqueCurrentFOCControllerInterface, typename HardwareInterface::ResourceHandleType>;
-
-    // Define a trait to get the appropriate ResourceHandleType
-
-    // Define JointHandle using conditional type selection
-    using JointHandle = typename std::conditional_t<
+  // Define JointHandle using conditional type selection
+  // TODO - simplify this by pushing joints_ down into the interface adapter and
+  // provide member functions in there to replace the raw access to joints_ in
+  // joint_trajectory_controller_impl
+  using JointHandle = typename std::conditional_t<
         std::is_same_v<HardwareInterface, hardware_interface::talonfxpro::TalonFXProCommandInterface>,
-        talonfxpro_controllers::TalonFXProMotionMagicVoltageControllerInterface,
-        typename HardwareInterface::ResourceHandleType>;
+          talonfxpro_controllers::TalonFXProPositionVoltageControllerInterface,
+          typename HardwareInterface::ResourceHandleType>;
 
   bool                      verbose_;            ///< Hard coded verbose flag to help in debugging
   std::string               name_;               ///< Controller name.
