@@ -1,0 +1,14 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/ubuntu/.2023RobotCode.readonly/zebROS_ws/devel_isolated/lib/python3.10/site-packages",
+        "/home/ubuntu/wpilib/2024/roborio/arm-nilrt-linux-gnueabi/sysroot/opt/ros/noetic/lib/python3.10/site-packages",
+        "/opt/openrobots/lib/python3.10/site-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/ubuntu/.2023RobotCode.readonly/zebROS_ws/devel_isolated/lib/python3.10/site-packages",
+        "/home/ubuntu/wpilib/2024/roborio/arm-nilrt-linux-gnueabi/sysroot/opt/ros/noetic/lib/python3.10/site-packages",
+        "/opt/openrobots/lib/python3.10/site-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ]
+}

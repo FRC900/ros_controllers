@@ -252,16 +252,41 @@ bool JointTrajectoryController<SegmentImpl, HardwareInterface>::init(HardwareInt
   assert(n_joints == urdf_joints.size());
 
   // Initialize members
-  joints_.resize(n_joints);
+  //joints_.resize(n_joints);
+  // use emplace_back instead of resize
+  for (unsigned int i = 0; i < n_joints; ++i)
+  {
+    joints_.emplace_back();
+  }
   angle_wraparound_.resize(n_joints);
   for (unsigned int i = 0; i < n_joints; ++i)
   {
     // Joint handle
-    try {joints_[i] = hw->getHandle(joint_names_[i]);}
-    catch (...)
+    try {
+      // TODO : This should be moved to a generic hardware_interface_adapter init function
+      // check type at compile time and use initWithNode if its a talonfxpro controller
+      if constexpr(std::is_same_v<HardwareInterface, hardware_interface::talonfxpro::TalonFXProCommandInterface>)
+      {
+        // trying to use first declaration of initWithNode
+        /*
+        bool TalonControllerInterface::initWithNode(hardware_interface::TalonCommandInterface *tci,
+                                            hardware_interface::TalonStateInterface *tsi,
+                                            ros::NodeHandle &controller_nh,
+                                            const std::string &talon_name)
+    */
+        joints_[i].initWithNode(hw, nullptr, controller_nh, joint_names_[i]);
+      }
+      if constexpr(std::is_same<HardwareInterface, hardware_interface::PositionJointInterface>::value)
+      {
+        joints_[i] = hw->getHandle(joint_names_[i]);
+      }
+    }
+    // print out the error
+    catch (const std::exception &exc) 
     {
+      //print out the error
       ROS_ERROR_STREAM_NAMED(name_, "Could not find joint '" << joint_names_[i] << "' in '" <<
-                                    this->getHardwareInterfaceType() << "'.");
+                                    this->getHardwareInterfaceType() << "'. The error was: " << exc.what());
       return false;
     }
 

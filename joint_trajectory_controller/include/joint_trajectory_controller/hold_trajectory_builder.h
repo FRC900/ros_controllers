@@ -50,7 +50,10 @@ private:
   using RealtimeGoalHandle    = realtime_tools::RealtimeServerGoalHandle<control_msgs::FollowJointTrajectoryAction>;
   using RealtimeGoalHandlePtr = boost::shared_ptr<RealtimeGoalHandle>;
 
-  using JointHandle = typename HardwareInterface::ResourceHandleType;
+  using JointHandle = typename std::conditional_t<
+      std::is_same_v<HardwareInterface, hardware_interface::talonfxpro::TalonFXProCommandInterface>,
+      talonfxpro_controllers::TalonFXProPositionVoltageControllerInterface,
+      typename HardwareInterface::ResourceHandleType>;
 
 public:
   //! @param joints Handles to the controlled joints. Stored for obtaining the current positions at any time.

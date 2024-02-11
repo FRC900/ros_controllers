@@ -1,5 +1,13 @@
 <library path="libjoint_trajectory_controller">
 
+  <class name="talon_position_controllers/JointTrajectoryController"
+      type="talon_position_controllers::JointTrajectoryController"
+      base_class_type="controller_interface::ControllerBase">
+    <description>
+      our talon joint trajectory controller
+    </description>
+  </class>
+
   <class name="position_controllers/JointTrajectoryController"
          type="position_controllers::JointTrajectoryController"
          base_class_type="controller_interface::ControllerBase">
