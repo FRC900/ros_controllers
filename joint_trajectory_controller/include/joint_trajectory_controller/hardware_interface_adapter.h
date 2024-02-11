@@ -61,7 +61,6 @@ template <class HardwareInterface, class State>
 class HardwareInterfaceAdapter
 {
 public:
-
   bool init(std::vector<typename HardwareInterface::ResourceHandleType>& /*joint_handles*/, ros::NodeHandle& /*controller_nh*/)
   {
     return false;
@@ -375,8 +374,6 @@ public:
 
   bool init(std::vector<talonfxpro_controllers::TalonFXProMotionMagicVoltageControllerInterface>& joint_handles, ros::NodeHandle& /*controller_nh*/)
   {
-    ROS_ERROR_STREAM("RIGHT HERE MFER.");
-
     // Store pointer to joint handles
     joint_handles_ptr_ = &joint_handles;
 

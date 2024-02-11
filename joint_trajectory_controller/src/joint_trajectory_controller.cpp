@@ -32,11 +32,6 @@
 // Project
 #include <trajectory_interface/quintic_spline_segment.h>
 #include <joint_trajectory_controller/joint_trajectory_controller.h>
-// talonfxpro
-#include <talon_controllers/talon_controller_interface.h>
-#include <talon_controllers/talonfxpro_controller_interface.h>
-#include <ctre_interfaces/talon_state_interface.h>
-
 
 namespace talon_position_controllers
 {

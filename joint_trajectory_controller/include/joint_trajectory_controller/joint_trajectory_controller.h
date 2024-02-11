@@ -79,7 +79,6 @@
 // talonfxpro
 #include <talon_controllers/talon_controller_interface.h>
 #include <talon_controllers/talonfxpro_controller_interface.h>
-#include <ctre_interfaces/talon_state_interface.h>
 #include <type_traits>
 
 namespace joint_trajectory_controller
