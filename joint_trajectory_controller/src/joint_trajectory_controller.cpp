@@ -88,8 +88,21 @@ namespace pos_vel_acc_controllers
           JointTrajectoryController;
 }
 
+namespace talon_position_controllers
+{
+  /**
+   * \brief Joint trajectory controller that represents trajectory segments as <b>quintic splines</b> and sends
+   * commands to a \b position interface.
+   */
+  typedef joint_trajectory_controller::JointTrajectoryController<trajectory_interface::QuinticSplineSegment<double>,
+                                                                 hardware_interface::talonfxpro::TalonFXProCommandInterface>
+          JointTrajectoryController;
+
+}
+
 PLUGINLIB_EXPORT_CLASS(position_controllers::JointTrajectoryController, controller_interface::ControllerBase)
 PLUGINLIB_EXPORT_CLASS(velocity_controllers::JointTrajectoryController, controller_interface::ControllerBase)
 PLUGINLIB_EXPORT_CLASS(effort_controllers::JointTrajectoryController,   controller_interface::ControllerBase)
 PLUGINLIB_EXPORT_CLASS(pos_vel_controllers::JointTrajectoryController,   controller_interface::ControllerBase)
 PLUGINLIB_EXPORT_CLASS(pos_vel_acc_controllers::JointTrajectoryController,   controller_interface::ControllerBase)
+PLUGINLIB_EXPORT_CLASS(talon_position_controllers::JointTrajectoryController, controller_interface::ControllerBase)

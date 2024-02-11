@@ -76,8 +76,13 @@
 #include <joint_trajectory_controller/hold_trajectory_builder.h>
 #include <joint_trajectory_controller/stop_trajectory_builder.h>
 
+// talonfxpro
+#include <talon_controllers/talonfxpro_controller_interface.h>
+#include <type_traits>
+
 namespace joint_trajectory_controller
 {
+
 
 /**
  * \brief Controller for executing joint-space trajectories on a group of joints.
@@ -174,9 +179,16 @@ protected:
   typedef std::shared_ptr<TrajectoryPerJoint> TrajectoryPerJointPtr;
   typedef realtime_tools::RealtimeBox<TrajectoryPtr> TrajectoryBox;
   typedef typename Segment::Scalar Scalar;
-
   typedef HardwareInterfaceAdapter<HardwareInterface, typename Segment::State> HwIfaceAdapter;
-  typedef typename HardwareInterface::ResourceHandleType JointHandle;
+  
+  // Define JointHandle using conditional type selection
+  // TODO - simplify this by pushing joints_ down into the interface adapter and
+  // provide member functions in there to replace the raw access to joints_ in
+  // joint_trajectory_controller_impl
+  using JointHandle = typename std::conditional_t<
+        std::is_same_v<HardwareInterface, hardware_interface::talonfxpro::TalonFXProCommandInterface>,
+          talonfxpro_controllers::TalonFXProPositionVoltageControllerInterface,
+          typename HardwareInterface::ResourceHandleType>;
 
   bool                      verbose_;            ///< Hard coded verbose flag to help in debugging
   std::string               name_;               ///< Controller name.
