@@ -44,7 +44,6 @@
 #include <hardware_interface/posvelacc_command_interface.h>
 
 // probably more includes than needed but shouldn't miss anything with this
-#include <talon_controllers/talon_controller_interface.h>
 #include <talon_controllers/talonfxpro_controller_interface.h>
 
 /**

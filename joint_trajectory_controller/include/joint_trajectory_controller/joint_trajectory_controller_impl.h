@@ -540,7 +540,7 @@ updateTrajectoryCommand(const JointTrajectoryConstPtr& msg, RealtimeGoalHandlePt
   if (msg->points.empty())
   {
     setHoldPosition(time_data->uptime, gh);
-    ROS_INFO_NAMED(name_, "Empty trajectory command, stopping.");
+    ROS_DEBUG_NAMED(name_, "Empty trajectory command, stopping.");
     return true;
   }
 
@@ -591,7 +591,7 @@ template <class SegmentImpl, class HardwareInterface>
 void JointTrajectoryController<SegmentImpl, HardwareInterface>::
 goalCB(GoalHandle gh)
 {
-  ROS_INFO_STREAM_NAMED(name_,"Received new action goal");
+  ROS_DEBUG_STREAM_NAMED(name_,"Received new action goal");
 
   // Precondition: Running controller
   if (!this->isRunning())
