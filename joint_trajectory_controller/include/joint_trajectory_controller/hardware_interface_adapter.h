@@ -222,7 +222,6 @@ private:
   std::vector<double> velocity_ff_;
 
   std::vector<hardware_interface::JointHandle>* joint_handles_ptr_;
-  // use is_same to check if the template type is the same as the type in the angle brackets
 };
 
 /**
