@@ -67,7 +67,7 @@ public:
   /**
    * @brief Virtual destructor because this class is a base class.
    */
-  virtual ~TrajectoryBuilder<SegmentImpl>() = default;
+  virtual ~TrajectoryBuilder() = default;
 
 private:
   using Segment               = JointTrajectorySegment<SegmentImpl>;
